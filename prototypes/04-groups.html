@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>群组管理 - 智能标的机器人管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #F5F5F5;
+            color: #1E2329;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: white;
+            height: 64px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FCD535 0%, #F0B90B 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #FAFAFA;
+            border-radius: 20px;
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background: white;
+            padding: 24px 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #707A8A;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: #FAFAFA;
+            color: #1E2329;
+        }
+
+        .menu-item.active {
+            background: #FEF6D8;
+            color: #F0B90B;
+            border-left-color: #F0B90B;
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容 */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FCD535 0%, #F0B90B 100%);
+            color: #1E2329;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(240, 185, 11, 0.3);
+        }
+
+        .btn-danger {
+            background: #FEE2E2;
+            color: #EF4444;
+            border: 1px solid #FCA5A5;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-danger:hover {
+            background: #FECACA;
+        }
+
+        /* 群组列表卡片 */
+        .groups-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #EAECEF;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #707A8A;
+            margin-top: 4px;
+        }
+
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #FAFAFA;
+        }
+
+        th {
+            padding: 16px 24px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #707A8A;
+            border-bottom: 1px solid #EAECEF;
+        }
+
+        td {
+            padding: 16px 24px;
+            font-size: 14px;
+            border-bottom: 1px solid #EAECEF;
+        }
+
+        tr:hover {
+            background: #FAFAFA;
+        }
+
+        .group-name {
+            font-weight: 600;
+            color: #1E2329;
+        }
+
+        .group-id {
+            color: #707A8A;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #F0FDF4;
+            color: #166534;
+            border: 1px solid #22C55E;
+        }
+
+        .status-badge.inactive {
+            background: #F5F5F5;
+            color: #707A8A;
+            border: 1px solid #EAECEF;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1E2329;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            color: #707A8A;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <span>智能标的机器人</span>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="user-menu">
+                <span>👤</span>
+                <span>管理员</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span>控制台</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span>基础配置</span>
+            </a>
+            <a href="#" class="menu-item active">
+                <span class="menu-icon">👥</span>
+                <span>群组管理</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⭐</span>
+                <span>关注列表</span>
+            </a>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <div class="page-header">
+                <div>
+                    <h1>群组管理</h1>
+                    <p style="color: #707A8A; font-size: 14px; margin-top: 8px;">管理允许使用机器人的群组白名单</p>
+                </div>
+                <button class="btn btn-primary">➕ 添加群组</button>
+            </div>
+
+            <!-- 群组列表 -->
+            <div class="groups-card">
+                <div class="card-header">
+                    <div class="card-title">📋 白名单群组</div>
+                    <div class="card-subtitle">共 5 个群组</div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>群组名称</th>
+                            <th>群组 ID</th>
+                            <th>关注标的</th>
+                            <th>状态</th>
+                            <th>添加时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="group-name">币圈交流群</div>
+                            </td>
+                            <td>
+                                <div class="group-id">-1001234567890</div>
+                            </td>
+                            <td>12</td>
+                            <td>
+                                <span class="status-badge active">✓ 活跃</span>
+                            </td>
+                            <td>2025-01-15 10:30</td>
+                            <td>
+                                <button class="btn-danger">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="group-name">Alpha 研究组</div>
+                            </td>
+                            <td>
+                                <div class="group-id">-1009876543210</div>
+                            </td>
+                            <td>8</td>
+                            <td>
+                                <span class="status-badge active">✓ 活跃</span>
+                            </td>
+                            <td>2025-01-18 14:20</td>
+                            <td>
+                                <button class="btn-danger">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="group-name">合约战队</div>
+                            </td>
+                            <td>
+                                <div class="group-id">-1005555555555</div>
+                            </td>
+                            <td>5</td>
+                            <td>
+                                <span class="status-badge active">✓ 活跃</span>
+                            </td>
+                            <td>2025-01-20 09:15</td>
+                            <td>
+                                <button class="btn-danger">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="group-name">DeFi 探索</div>
+                            </td>
+                            <td>
+                                <div class="group-id">-1007777777777</div>
+                            </td>
+                            <td>3</td>
+                            <td>
+                                <span class="status-badge active">✓ 活跃</span>
+                            </td>
+                            <td>2025-01-22 16:45</td>
+                            <td>
+                                <button class="btn-danger">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="group-name">测试群组</div>
+                            </td>
+                            <td>
+                                <div class="group-id">-1002222222222</div>
+                            </td>
+                            <td>0</td>
+                            <td>
+                                <span class="status-badge inactive">○ 未使用</span>
+                            </td>
+                            <td>2025-01-25 11:00</td>
+                            <td>
+                                <button class="btn-danger">删除</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 如果没有数据显示空状态 -->
+                <!-- <div class="empty-state">
+                    <div class="empty-state-icon">👥</div>
+                    <div class="empty-state-title">暂无群组</div>
+                    <div class="empty-state-text">点击上方"添加群组"按钮，将群组添加到白名单</div>
+                    <button class="btn btn-primary">➕ 添加第一个群组</button>
+                </div> -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 交互演示
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('添加群组\n\n请输入群组ID和名称\n\n这是原型演示，实际功能将在开发阶段实现');
+            });
+        });
+
+        document.querySelectorAll('.btn-danger').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('确定要删除这个群组吗？\n\n删除后该群组将无法使用机器人功能')) {
+                    alert('群组已删除\n\n这是原型演示，实际功能将在开发阶段实现');
+                }
+            });
+        });
+
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
