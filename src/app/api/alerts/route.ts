@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
         g.group_name as group_name
       FROM alert_history a
       LEFT JOIN groups g ON a.group_id = g.group_id
-      ORDER BY a.sent_at DESC
+      ORDER BY a.created_at DESC
       LIMIT ?
     `);
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
         new_price: alert.new_price,
         change_percent: alert.change_percent,
         message: alert.message,
-        sent_at: alert.sent_at
+        created_at: alert.created_at  // Unix 时间戳（秒）
       }))
     });
   } catch (error) {

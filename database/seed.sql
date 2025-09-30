@@ -8,6 +8,7 @@ INSERT OR IGNORE INTO config (key, value, description, is_sensitive, is_editable
   ('openai_api_url', 'https://api.openai.com/v1', 'OpenAI API地址 (/ 结尾忽略 v1, # 结尾强制使用输入地址)', 0, 1),
   ('openai_api_key', '', 'OpenAI API Key', 1, 1),
   ('openai_model', 'gpt-4o-mini', 'OpenAI 模型名称', 0, 1),
+  ('timezone', 'Asia/Shanghai', '时区设置（IANA时区标识）', 0, 1),
   ('system_initialized', 'true', '系统是否已初始化', 0, 0);
 
 -- 初始化管理员数据（默认密码: admin123）

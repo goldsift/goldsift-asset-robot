@@ -50,11 +50,11 @@ CREATE TABLE IF NOT EXISTS watchlists (
   reference_price REAL NOT NULL,
   price_threshold REAL,
   last_alert_price REAL,
-  last_alert_at DATETIME,
+  last_alert_at INTEGER,  -- Unix 时间戳（秒）
   added_by TEXT NOT NULL,
   is_active INTEGER DEFAULT 1,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at INTEGER NOT NULL,  -- Unix 时间戳（秒）
+  updated_at INTEGER NOT NULL,  -- Unix 时间戳（秒）
   UNIQUE(group_id, symbol, asset_type)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS alert_history (
   new_price REAL NOT NULL,
   change_percent REAL NOT NULL,
   message TEXT,
-  sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  created_at INTEGER NOT NULL  -- Unix 时间戳（秒）
 );
 
 -- 创建索引以提高查询性能
@@ -91,4 +91,4 @@ CREATE INDEX IF NOT EXISTS idx_watchlists_active ON watchlists(is_active);
 CREATE INDEX IF NOT EXISTS idx_price_history_symbol ON price_history(symbol);
 CREATE INDEX IF NOT EXISTS idx_price_history_timestamp ON price_history(timestamp);
 CREATE INDEX IF NOT EXISTS idx_alert_history_group_id ON alert_history(group_id);
-CREATE INDEX IF NOT EXISTS idx_alert_history_sent_at ON alert_history(sent_at);
+CREATE INDEX IF NOT EXISTS idx_alert_history_created_at ON alert_history(created_at);

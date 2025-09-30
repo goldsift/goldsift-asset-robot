@@ -41,11 +41,11 @@ export interface Watchlist {
   reference_price: number;
   price_threshold?: number;
   last_alert_price?: number;
-  last_alert_at?: string;
+  last_alert_at?: number;  // Unix 时间戳（秒）
   added_by: string;
   is_active: number;
-  created_at: string;
-  updated_at: string;
+  created_at: number;  // Unix 时间戳（秒）
+  updated_at: number;  // Unix 时间戳（秒）
 }
 
 export interface PriceHistory {
@@ -66,5 +66,5 @@ export interface AlertHistory {
   new_price: number;
   change_percent: number;
   message?: string;
-  sent_at: string;
+  created_at: number;  // Unix 时间戳（秒）
 }

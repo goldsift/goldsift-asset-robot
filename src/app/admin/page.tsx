@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { formatTimestamp } from '@/utils/time-client';
 
 interface BotStatus {
   isRunning: boolean;
@@ -23,7 +24,7 @@ interface Alert {
   new_price: number;
   change_percent: number;
   message?: string;
-  sent_at: string;
+  created_at: number;  // Unix 时间戳（秒）
 }
 
 export default function AdminPage() {
@@ -255,7 +256,7 @@ export default function AdminPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(alert.sent_at).toLocaleString('zh-CN')}
+                        {formatTimestamp(alert.created_at)}
                       </td>
                     </tr>
                   ))}

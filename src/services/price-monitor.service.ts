@@ -2,6 +2,7 @@ import { WatchlistService } from './watchlist.service';
 import { BinanceService } from './binance.service';
 import { TelegramBotService } from './telegram-bot.service';
 import { ConfigService } from '@/lib/config.service';
+import { TimeService } from '@/lib/time.service';
 import { getDatabase } from '@/lib/database';
 import type { Watchlist } from '@/types/database';
 
@@ -164,11 +165,8 @@ export class PriceMonitorService {
     }
 
     // 检查距离上次提醒的时间
-    const lastAlertTime = new Date(watchlist.last_alert_at).getTime();
-    const now = Date.now();
-    const alertInterval = ConfigService.getAlertInterval() * 1000; // 转换为毫秒
-
-    return now - lastAlertTime >= alertInterval;
+    const alertInterval = ConfigService.getAlertInterval(); // 秒
+    return TimeService.isBeforeSeconds(watchlist.last_alert_at, alertInterval);
   }
 
   /**
@@ -214,7 +212,7 @@ export class PriceMonitorService {
     message += `当前价格: $${newPrice.toFixed(8)}\n`;
     message += `变动幅度: ${direction} ${changePercent.toFixed(2)}%\n`;
     message += `━━━━━━━━━━━━\n`;
-    message += `⏰ ${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}`;
+    message += `⏰ ${TimeService.format(TimeService.now())}`;
 
     return message;
   }
@@ -225,15 +223,17 @@ export class PriceMonitorService {
   private static updateAlertRecord(alert: PriceAlert): void {
     const db = getDatabase();
     try {
+      const now = TimeService.now();
+
       // 更新关注列表中的提醒记录
       const stmt = db.prepare(
-        "UPDATE watchlists SET last_alert_price = ?, last_alert_at = datetime('now') WHERE id = ?"
+        'UPDATE watchlists SET last_alert_price = ?, last_alert_at = ? WHERE id = ?'
       );
-      stmt.run(alert.newPrice, alert.watchlist.id);
+      stmt.run(alert.newPrice, now, alert.watchlist.id);
 
       // 记录到提醒历史表
       const insertStmt = db.prepare(
-        'INSERT INTO alert_history (watchlist_id, group_id, symbol, old_price, new_price, change_percent, message) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        'INSERT INTO alert_history (watchlist_id, group_id, symbol, old_price, new_price, change_percent, message, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
       );
       insertStmt.run(
         alert.watchlist.id,
@@ -242,7 +242,8 @@ export class PriceMonitorService {
         alert.oldPrice,
         alert.newPrice,
         alert.changePercent,
-        this.formatAlertMessage(alert)
+        this.formatAlertMessage(alert),
+        now
       );
     } catch (error) {
       console.error('更新提醒记录失败:', error);

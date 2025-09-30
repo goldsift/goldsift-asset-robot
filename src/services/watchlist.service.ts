@@ -1,4 +1,5 @@
 import { getDatabase } from '@/lib/database';
+import { TimeService } from '@/lib/time.service';
 import type { Watchlist, AssetType } from '@/types/database';
 
 export class WatchlistService {
@@ -16,6 +17,7 @@ export class WatchlistService {
     const db = getDatabase();
     try {
       const threshold = priceThreshold || 5; // 默认 5%
+      const now = TimeService.now();
 
       // 检查是否已存在
       const existing = db.prepare(
@@ -25,16 +27,16 @@ export class WatchlistService {
       if (existing) {
         // 已存在,执行更新
         const stmt = db.prepare(
-          'UPDATE watchlists SET reference_price = ?, price_threshold = ?, updated_at = CURRENT_TIMESTAMP WHERE group_id = ? AND symbol = ? AND asset_type = ?'
+          'UPDATE watchlists SET reference_price = ?, price_threshold = ?, updated_at = ? WHERE group_id = ? AND symbol = ? AND asset_type = ?'
         );
-        stmt.run(referencePrice, threshold, groupId, assetSymbol, assetType);
+        stmt.run(referencePrice, threshold, now, groupId, assetSymbol, assetType);
         return { success: true, isUpdate: true };
       } else {
         // 不存在,执行插入
         const stmt = db.prepare(
-          'INSERT INTO watchlists (group_id, symbol, asset_type, reference_price, price_threshold, added_by) VALUES (?, ?, ?, ?, ?, ?)'
+          'INSERT INTO watchlists (group_id, symbol, asset_type, reference_price, price_threshold, added_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         );
-        stmt.run(groupId, assetSymbol, assetType, referencePrice, threshold, addedBy);
+        stmt.run(groupId, assetSymbol, assetType, referencePrice, threshold, addedBy, now, now);
         return { success: true, isUpdate: false };
       }
     } catch (error) {

@@ -192,4 +192,18 @@ export class ConfigService {
   static setBinanceApiUrl(url: string): void {
     this.setConfig('binance_api_url', url, 'Binance API地址');
   }
+
+  /**
+   * 获取时区配置
+   */
+  static getTimezone(): string {
+    return this.getConfig('timezone') || 'Asia/Shanghai';
+  }
+
+  /**
+   * 设置时区配置
+   */
+  static setTimezone(timezone: string): void {
+    this.setConfig('timezone', timezone, '时区设置（IANA时区标识）');
+  }
 }

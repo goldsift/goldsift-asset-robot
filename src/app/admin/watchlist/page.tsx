@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { formatTimestamp } from '@/utils/time-client';
 
 interface Watchlist {
   id: number;
@@ -11,7 +12,7 @@ interface Watchlist {
   type: 'spot' | 'futures' | 'alpha';
   reference_price: number;
   threshold: number;
-  added_at: string;
+  added_at: number;  // Unix 时间戳（秒）
   current_price?: number;
   price_change?: number;
 }
@@ -286,7 +287,7 @@ export default function WatchlistPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(item.added_at).toLocaleString('zh-CN')}
+                        {formatTimestamp(item.added_at)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">

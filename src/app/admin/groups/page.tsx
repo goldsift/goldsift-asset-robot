@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AdminLayout from '@/components/AdminLayout';
+import { formatTimestamp } from '@/utils/time-client';
 
 interface Group {
   id: number;
@@ -9,8 +10,8 @@ interface Group {
   group_name: string;
   description: string | null;
   is_active: number;
-  created_at: string;
-  updated_at: string;
+  created_at: number;  // Unix 时间戳（秒）
+  updated_at: number;  // Unix 时间戳（秒）
   watchlist_count?: number;
 }
 
@@ -204,7 +205,7 @@ export default function GroupsPage() {
                       </td>
                       <td className="px-6 py-4 text-gray-900">{group.watchlist_count || 0}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {new Date(group.created_at).toLocaleString('zh-CN')}
+                        {formatTimestamp(group.created_at)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
