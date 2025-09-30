@@ -1,5 +1,5 @@
 import { getDatabase } from '@/lib/database';
-import type { Group } from '@/types/bot';
+import type { Group } from '@/types/database';
 
 export class GroupService {
   /**

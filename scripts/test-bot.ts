@@ -35,7 +35,7 @@ async function testBot() {
   const allWatchlists = WatchlistService.getAllWatchlists();
   console.log(`   总关注数量: ${allWatchlists.length}`);
   if (allWatchlists.length > 0) {
-    console.log(`   示例: ${allWatchlists[0].asset_symbol} (${allWatchlists[0].asset_type})`);
+    console.log(`   示例: ${allWatchlists[0].symbol} (${allWatchlists[0].asset_type})`);
   }
   console.log();
 

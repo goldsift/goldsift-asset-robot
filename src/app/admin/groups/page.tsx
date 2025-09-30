@@ -240,7 +240,7 @@ export default function GroupsPage() {
             <div className="text-center py-16">
               <div className="text-6xl mb-4">👥</div>
               <div className="text-lg font-semibold text-gray-900 mb-2">暂无群组</div>
-              <div className="text-sm text-gray-600 mb-6">点击上方"添加群组"按钮,将群组添加到白名单</div>
+              <div className="text-sm text-gray-600 mb-6">点击上方&ldquo;添加群组&rdquo;按钮,将群组添加到白名单</div>
               <button
                 onClick={() => setShowAddModal(true)}
                 className="px-5 py-2.5 bg-gradient-to-r from-yellow-300 to-yellow-500 text-gray-900 font-semibold rounded-lg hover:shadow-lg transition-all inline-flex items-center gap-2"

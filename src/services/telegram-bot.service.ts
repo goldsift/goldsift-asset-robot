@@ -342,7 +342,7 @@ export class TelegramBotService {
         parsed.symbol,
         finalType,
         parseFloat(referencePrice),
-        userId,
+        userId?.toString() || 'unknown',
         parsed.threshold
       );
 

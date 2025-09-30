@@ -1,5 +1,5 @@
 import { getDatabase } from '@/lib/database';
-import type { Watchlist, AssetType } from '@/types/bot';
+import type { Watchlist, AssetType } from '@/types/database';
 
 export class WatchlistService {
   /**

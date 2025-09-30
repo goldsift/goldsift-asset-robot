@@ -29,7 +29,7 @@ export class PriceMonitorService {
       console.log(`总数: ${watchlists.length}`);
       if (watchlists.length > 0) {
         watchlists.forEach((w, i) => {
-          console.log(`${i + 1}. ${w.symbol} (${w.asset_type}) - is_active: ${w.is_active}`);
+          console.log(`${i + 1}. ${w.symbol} (${w.asset_type})`);
         });
       }
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');

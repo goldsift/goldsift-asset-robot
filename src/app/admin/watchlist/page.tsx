@@ -36,7 +36,17 @@ export default function WatchlistPage() {
   }, []);
 
   useEffect(() => {
-    applyFilters();
+    let filtered = watchlists;
+
+    if (filterGroup !== 'all') {
+      filtered = filtered.filter(w => w.group_name === filterGroup);
+    }
+
+    if (filterType !== 'all') {
+      filtered = filtered.filter(w => w.type === filterType);
+    }
+
+    setFilteredList(filtered);
   }, [watchlists, filterGroup, filterType]);
 
   const loadData = async () => {
@@ -56,20 +66,6 @@ export default function WatchlistPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const applyFilters = () => {
-    let filtered = watchlists;
-
-    if (filterGroup !== 'all') {
-      filtered = filtered.filter(w => w.group_name === filterGroup);
-    }
-
-    if (filterType !== 'all') {
-      filtered = filtered.filter(w => w.type === filterType);
-    }
-
-    setFilteredList(filtered);
   };
 
   const handleDelete = async (id: number) => {
