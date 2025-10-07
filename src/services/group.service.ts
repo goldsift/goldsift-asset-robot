@@ -37,14 +37,17 @@ export class GroupService {
   static addGroup(params: { group_id: string; group_name: string; description?: string; is_active?: number }): boolean {
     const db = getDatabase();
     try {
+      const now = Math.floor(Date.now() / 1000);
       const stmt = db.prepare(
-        'INSERT INTO groups (group_id, group_name, description, is_active) VALUES (?, ?, ?, ?)'
+        'INSERT INTO groups (group_id, group_name, description, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
       );
       stmt.run(
         params.group_id,
         params.group_name,
         params.description || null,
-        params.is_active ?? 1
+        params.is_active ?? 1,
+        now,
+        now
       );
       return true;
     } catch (error) {
@@ -59,8 +62,9 @@ export class GroupService {
   static updateGroupStatus(groupId: string, isActive: number): boolean {
     const db = getDatabase();
     try {
-      const stmt = db.prepare('UPDATE groups SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE group_id = ?');
-      const result = stmt.run(isActive, groupId);
+      const now = Math.floor(Date.now() / 1000);
+      const stmt = db.prepare('UPDATE groups SET is_active = ?, updated_at = ? WHERE group_id = ?');
+      const result = stmt.run(isActive, now, groupId);
       return result.changes > 0;
     } catch (error) {
       console.error('更新群组状态失败:', error);

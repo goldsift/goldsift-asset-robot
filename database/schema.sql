@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS groups (
   group_name TEXT NOT NULL,
   description TEXT,
   is_active INTEGER DEFAULT 1,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  created_at INTEGER NOT NULL,  -- Unix 时间戳（秒）
+  updated_at INTEGER NOT NULL   -- Unix 时间戳（秒）
 );
 
 -- 用户表：记录使用机器人的用户
